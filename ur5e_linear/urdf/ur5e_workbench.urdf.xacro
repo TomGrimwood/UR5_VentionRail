@@ -6,8 +6,8 @@
     <xacro:include filename="$(find workbench)/urdf/workbench.urdf.xacro" />
     <xacro:include filename="$(find ur_description)/urdf/inc/ur5_macro.xacro" />
     <xacro:arg name="transmission_hw_interface" default="hardware_interface/PositionJointInterface" />
-    <xacro:arg name="joint_limits_parameters_file" default="$(find mobipick_description)/config/joint_limits.yaml" /> <!-- path the to the yaml with the ur5 joint limits. -->
-    <xacro:arg name="kinematics_config" default="$(find mobipick_description)/config/ur5_calibration.yaml" /> <!-- path the to the yaml with the arms calibration parameters. -->
+    <xacro:arg name="joint_limits_parameters_file" default="$(find ur5e_linear)/config/joint_limits.yaml" /> <!-- path the to the yaml with the ur5 joint limits. -->
+    <xacro:arg name="kinematics_config" default="$(find ur5e_linear)/config/ur5_calibration.yaml" /> <!-- path the to the yaml with the arms calibration parameters. -->
     <xacro:property name="prefix" value="" />
     <link name="world" />
 
@@ -52,7 +52,7 @@
 
 
     <!-- ############### GRIPPER ################ -->
-    <xacro:include filename="$(find mobipick_description)/urdf/robotiq_2f_140/robotiq_arg2f_140_model_macro.xacro" />
+    <!-- <xacro:include filename="$(find mobipick_description)/urdf/robotiq_2f_140/robotiq_arg2f_140_model_macro.xacro" />
 
     <joint name="${prefix}ft300_coupling_joint" type="fixed">
         <origin xyz="0 0 ${coupling_inner_length / 2}" rpy="0 0 ${-pi/2}" />
@@ -89,7 +89,7 @@
         <child link="${prefix}gripper_robotiq_arg2f_base_link" />
     </joint>
 
-    <xacro:robotiq_arg2f_140 prefix="${prefix}gripper_" />
+    <xacro:robotiq_arg2f_140 prefix="${prefix}gripper_" /> -->
 
 
     <xacro:include filename="$(find azure_description)/urdf/azure_sensor.urdf.xacro" />
