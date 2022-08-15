@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro"
+      name="azure_test">>
+
+  <!-- Add sensor -->
+  <xacro:include filename="$(find azure_description)/urdf/azure_sensor.urdf.xacro" />
+
+  <link name="world" />
+
+  <link name="table">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 -0.45 -0.03"/>
+      <geometry>
+        <box size="0.6 1.2 0.05"/>
+      </geometry>
+      <material name="grey"/>
+    </visual>
+    <surface>
+      <friction>
+        <ode>
+          <mu>5</mu>
+          <mu2>5</mu2>\
+        </ode>
+      </friction>
+    </surface>
+    <collision name='camera_collision'>
+      <origin rpy="0 0 0" xyz="0 -0.45 -0.03"/>
+      <geometry>
+        <box size="0.6 1.2 0.05"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="world_table_joint" type="fixed">
+    <parent link="world"/>
+    <child link="table"/>
+  </joint>
+
+  <joint type="fixed" name="table_camera_joint">
+    <origin xyz="0.15 -1 0.41" rpy="0.2 0 3.54"/>
+    <child link="v1_camera_mount_link"/>
+    <parent link="table"/>
+    <axis xyz="0 0 0" rpy="0 0 0"/>
+    <limit effort="10000" velocity="1000"/>
+    <dynamics damping="1.0" friction="1.0"/>
+  </joint>
+
+  
+  <xacro:azure_sensor prefix="v1_"/>
+
+    <xacro:include filename="$(find mobipick_description)/urdf/sensors/gripper_cam.urdf.xacro" />
+
+  <joint name="v1_sensor_mount_joint" type="fixed">
+    <origin xyz="0.0 0.0 .505" rpy="0.0 ${-3.14/8} 1.2" />
+    <child link="v1_sensor_mount_link"/>
+    <parent link="table"/>
+  </joint>
+
+  <xacro:gripper_cam prefix="v1_" />
+
+</robot>

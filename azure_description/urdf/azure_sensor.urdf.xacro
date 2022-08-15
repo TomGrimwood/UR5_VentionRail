@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- From dimensions given at https://docs.microsoft.com/en-us/azure/kinect-dk/media/resources/hardware-specs-media/dimensions.png -->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="azure_sensor">
+
+  <xacro:include filename="$(find azure_description)/urdf/azure_sensor.gazebo.xacro" />
+  <xacro:property name="M_PI" value="3.1415926535897931" />
+  
+
+    <xacro:macro name="azure_sensor" params="prefix">
+
+      <material name="grey">
+        <color rgba="0.6 0.6 0.6 1" />
+      </material>
+
+      <link name="${prefix}camera_mount_link">
+        <inertial>
+          <origin
+            xyz="0 0 0"
+            rpy="0 0 0" />
+          <mass
+            value="0.440" />
+          <inertia
+            ixx="0.00063789"
+            ixy="0"
+            ixz="0"
+            iyy="0.000444"
+            iyz="0"
+            izz="0.00097111" />
+        </inertial>
+
+        <visual>
+
+          <origin
+            xyz="0.062 0 0"
+            rpy="0 0 ${M_PI/2}" />
+
+          <geometry>
+            <mesh
+            filename="package://azure_description/meshes/base_link.STL" />
+          </geometry>
+
+<!-- for testing if mesh box visually looks in the right place -->
+          <!-- <origin
+          xyz="0.00 0 0"
+          rpy="0 0 ${M_PI/2}" />
+
+        <geometry>
+          <box size="0.11 0.13 0.045" />
+        </geometry> -->
+
+          <material name="grey" />
+        </visual>
+
+        <collision>
+
+          <origin
+            xyz="0 0 0"
+            rpy="0 0 ${M_PI/2}" />
+
+          <geometry>
+            <box size="0.11 0.13 0.045" />
+          </geometry>
+        </collision>
+      </link>
+
+
+
+      <joint name="${prefix}azure_sensor_depth_joint" type="fixed">
+        <origin rpy="0 0 0" xyz=".062 -0.0005  0.0068"/>
+        <parent link="${prefix}camera_mount_link"/>
+        <child link="${prefix}azure_sensor_depth_link"/>
+      </joint>
+
+      <link name="${prefix}azure_sensor_depth_link">
+        <!-- <visual>
+          <origin rpy="0 0 0" xyz="0.0 0.0 0"/>
+        </visual> -->
+      </link>
+
+      <joint name="${prefix}azure_sensor_rgb_joint" type="fixed">
+        <origin rpy="0 0 0" xyz="0.062 -.0320 0"/>
+        <parent link="${prefix}camera_mount_link"/>
+        <child link="${prefix}azure_sensor_rgb_link"/>
+      </joint>
+
+      <link name="${prefix}azure_sensor_rgb_link">
+        <!-- <visual>
+          <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+        </visual> -->
+      </link>
+
+
+      <!-- kinect2 depth sensor frame -->
+      <joint name="${prefix}azure_sensor_depth_optical_frame_joint" type="fixed">
+
+        <origin xyz="0 0 0"
+                rpy="${-M_PI/2+0} ${0.0+0}         ${-M_PI/2+0}"/>
+
+        <parent link="${prefix}azure_sensor_depth_link"/>
+        <child link="${prefix}azure_sensor_depth_optical_frame"/>
+      </joint>
+
+      <!-- <xacro:azure_sensor_rgb_gazebo 
+        link_name="${prefix}azure_sensor_rgb_link"
+        frame_name="${prefix}azure_sensor_rgb_optical_frame"
+        camera_name="${prefix}azure_sensor" />
+
+      <xacro:azure_sensor_depth_gazebo
+        link_name="${prefix}azure_sensor_depth_link"
+        frame_name="${prefix}azure_sensor_depth_optical_frame"
+        camera_name="${prefix}azure_sensor" /> -->
+
+          <!-- kinect2 rgb sensor frame -->
+      <joint name="${prefix}azure_sensor_rgb_optical_frame_joint" type="fixed">
+
+        <origin xyz="0 0 0"
+                rpy="${-M_PI/2+0} ${0.0+0}         ${-M_PI/2+0}" />
+
+        <parent link="${prefix}azure_sensor_rgb_link"/>
+        <child link="${prefix}azure_sensor_rgb_optical_frame"/>
+      </joint>
+
+      <link name="${prefix}azure_sensor_rgb_optical_frame"/>
+      <link name="${prefix}azure_sensor_depth_optical_frame"/>
+
+      <xacro:azure_sensor_rgb_gazebo 
+        link_name="${prefix}azure_sensor_rgb_link"
+        frame_name="${prefix}azure_sensor_rgb_optical_frame"
+        camera_name="${prefix}azure_sensor" />
+
+        
+
+      <xacro:azure_sensor_depth_gazebo
+        link_name="${prefix}azure_sensor_depth_link"
+        frame_name="${prefix}azure_sensor_depth_optical_frame"
+        camera_name="${prefix}azure_sensor" />
+
+
+  </xacro:macro>
+
+
+
+</robot>

@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<robot name="ur5e_rail" xmlns:xacro="https://ros.org/wiki/xacro">
+    <!-- tower -->
+    <xacro:include filename="rail.urdf.xacro" />
+    <!-- ur10 -->
+    <xacro:include filename="$(find workbench)/urdf/workbench.urdf.xacro" />
+    <xacro:include filename="$(find ur_description)/urdf/inc/ur5_macro.xacro" />
+    <xacro:arg name="transmission_hw_interface" default="hardware_interface/PositionJointInterface" />
+    <xacro:arg name="joint_limits_parameters_file" default="$(find mobipick_description)/config/joint_limits.yaml" /> <!-- path the to the yaml with the ur5 joint limits. -->
+    <xacro:arg name="kinematics_config" default="$(find mobipick_description)/config/ur5_calibration.yaml" /> <!-- path the to the yaml with the arms calibration parameters. -->
+    <xacro:property name="prefix" value="" />
+    <link name="world" />
+
+    <joint name="world_joint" type="fixed">
+        <parent link="world" />
+        <child link="workbench_link" />
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+    </joint>
+
+    <xacro:workbench prefix="" />
+
+    <joint name="attachment_joint" type="fixed">
+        <parent link="axis1" />
+        <child link="${prefix}ur5_base_link" />
+        <origin xyz="0.0 0.0 0.06" rpy="0 0.0 0" />
+    </joint>
+
+    <xacro:ur5_robot prefix="${prefix}ur5_" 
+    transmission_hw_interface="$(arg transmission_hw_interface)" 
+    joint_limits_parameters_file="$(arg joint_limits_parameters_file)" 
+    kinematics_parameters_file="$(arg kinematics_config)" />
+
+    <!-- ############## FT SENSOR ############### -->
+    <!-- gripper coupling (ISO 9409-1-50-4-M / Robotiq AGC-CPL-062-002_20171219) -->
+    <xacro:property name="coupling_radius" value="0.0375" />
+    <xacro:property name="coupling_outer_length" value="0.014" />
+    <xacro:property name="coupling_inner_length" value="0.008" />
+    <xacro:property name="coupling_mass" value="0.100" />
+
+    <xacro:include filename="$(find robotiq_ft_sensor)/urdf/robotiq_ft300.urdf.xacro" />
+
+    <xacro:robotiq_ft300 parent="${prefix}ur5_tool0" prefix="${prefix}">
+        <origin xyz="0 0 ${-coupling_inner_length / 2}" rpy="0 0 ${-pi/2}" />
+    </xacro:robotiq_ft300>
+    <!-- Colorize the sensor black  -->
+    <gazebo reference="${prefix}ft300_mounting_plate">
+        <material>Gazebo/FlatBlack</material>
+    </gazebo>
+    <gazebo reference="${prefix}ft300_sensor">
+        <material>Gazebo/FlatBlack</material>
+    </gazebo>
+
+
+    <!-- ############### GRIPPER ################ -->
+    <xacro:include filename="$(find mobipick_description)/urdf/robotiq_2f_140/robotiq_arg2f_140_model_macro.xacro" />
+
+    <joint name="${prefix}ft300_coupling_joint" type="fixed">
+        <origin xyz="0 0 ${coupling_inner_length / 2}" rpy="0 0 ${-pi/2}" />
+        <parent link="${prefix}robotiq_ft_frame_id" />
+        <child link="${prefix}gripper_coupling_link" />
+    </joint>
+
+    <link name="${prefix}gripper_coupling_link">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <cylinder radius="${coupling_radius}" length="${coupling_outer_length}" />
+            </geometry>
+            <xacro:insert_block name="material_black" />
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <cylinder radius="${coupling_radius}" length="${coupling_outer_length}" />
+            </geometry>
+        </collision>
+        <xacro:cylinder_inertial radius="${coupling_radius}" length="${coupling_outer_length}" mass="${coupling_mass}">
+            <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        </xacro:cylinder_inertial>
+    </link>
+    <gazebo reference="${prefix}gripper_coupling_link">
+        <material>Gazebo/FlatBlack</material>
+    </gazebo>
+
+    <joint name="${prefix}coupling_2f140_joint" type="fixed">
+        <origin xyz="0 0 ${coupling_inner_length / 2}" rpy="0 0 0" />
+        <parent link="${prefix}gripper_coupling_link" />
+        <child link="${prefix}gripper_robotiq_arg2f_base_link" />
+    </joint>
+
+    <xacro:robotiq_arg2f_140 prefix="${prefix}gripper_" />
+
+
+    <xacro:include filename="$(find azure_description)/urdf/azure_sensor.urdf.xacro" />
+
+
+    <joint name="${prefix}azure_sensor_mount_joint" type="fixed">
+      <origin xyz="0.0 0.0 0.07" rpy="0.0 0.0 0" />
+      <parent link="${prefix}ur5_flange" />
+      <child link="${prefix}camera_mount_link" />
+    </joint>
+  
+  
+    <xacro:azure_sensor  prefix="${prefix}"/>
+
+</robot>

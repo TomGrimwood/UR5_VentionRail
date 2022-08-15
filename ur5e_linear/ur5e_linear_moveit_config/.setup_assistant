@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: ur5e_linear
+    relative_path: urdf/ur5e_workbench.urdf.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/ur5e_rail.srdf
+  CONFIG:
+    author_name: Tom Grimwood
+    author_email: tgri417@aucklanduni.ac.nz
+    generated_timestamp: 1660528362
