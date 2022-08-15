@@ -1,0 +1,9 @@
+- git:
+    local-name: robotiq
+    uri: https://github.com/Krause92/robotiq.git
+    version: noetic-position-feedback
+
+- git:
+    local-name: fmauch_universal_robot
+    uri: https://github.com/fmauch/universal_robot.git
+    version: calibration_devel
