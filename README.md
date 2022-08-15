@@ -41,4 +41,4 @@ roslaunch ur5e_linear_moveit_config demo.launch
 Notes
 ------------
 
-Joints are by default given higher weights the further along the kinematic chain, so moving the linear rail is seen as a better option than moving the end effector, to fix this, and give a solution more intuitive, the weights have been manually adjusted at `ur5e_linear_moveit_config/config/kinematics.yaml` , which sets the linear axis joint to be much lower, prioritising its movement. 
+Joints are by default given lower weights the further along the kinematic chain, so moving the linear rail is seen as a better option than moving the end effector, to fix this, and give a solution more intuitive, the weights have been manually adjusted at `ur5e_linear_moveit_config/config/kinematics.yaml` , which sets the linear axis joint to be much lower, prioritising its movement. 
